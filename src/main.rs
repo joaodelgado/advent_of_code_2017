@@ -1,6 +1,7 @@
 use std::env;
 
 mod day01;
+mod day02;
 
 fn main() {
     let day = env::args()
@@ -20,6 +21,8 @@ fn main() {
     match format!("{}{}", day, part).as_ref() {
         "11" => day01::run1(),
         "12" => day01::run2(),
+        "21" => day02::run1(),
+        "22" => day02::run2(),
         _ => panic!("Unsupported day {}", day),
     }
 }
