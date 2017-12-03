@@ -1,7 +1,10 @@
 use std::env;
 
+mod utils;
+
 mod day01;
 mod day02;
+mod day03;
 
 fn main() {
     let day = env::args()
@@ -23,6 +26,8 @@ fn main() {
         "12" => day01::run2(),
         "21" => day02::run1(),
         "22" => day02::run2(),
+        "31" => day03::run1(),
+        "32" => day03::run2(),
         _ => panic!("Unsupported day {}", day),
     }
 }

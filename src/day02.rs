@@ -1,5 +1,4 @@
-use std::fs::File;
-use std::io::prelude::*;
+use utils::read_file;
 
 macro_rules! min {
     ($a:expr, $b:expr) => {
@@ -22,16 +21,7 @@ macro_rules! max {
 }
 
 fn read_input() -> Vec<Vec<u64>> {
-    let mut input = String::new();
-    {
-        let mut f = File::open("data/day02").expect("input file not found");
-        String::new();
-        f.read_to_string(&mut input).expect(
-            "something went wrong while reading the input file",
-        );
-    }
-
-    input
+    read_file("data/day02")
         .split('\n')
         .filter(|line| !line.is_empty())
         .map(|line| {

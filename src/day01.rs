@@ -1,18 +1,4 @@
-use std::fs::File;
-use std::io::prelude::*;
-
-fn read_input() -> String {
-    let mut input = String::new();
-    {
-        let mut f = File::open("data/day01").expect("input file not found");
-        String::new();
-        f.read_to_string(&mut input).expect(
-            "something went wrong while reading the input file",
-        );
-    }
-
-    input
-}
+use utils::read_file;
 
 fn captcha(input: Vec<char>, offset: usize) -> u32 {
     let input_copy = input.clone();
@@ -33,12 +19,12 @@ fn captcha(input: Vec<char>, offset: usize) -> u32 {
 }
 
 pub fn run1() {
-    let input: Vec<char> = read_input().trim().chars().collect();
+    let input: Vec<char> = read_file("data/day01").trim().chars().collect();
     println!("Result: {}", captcha(input, 1));
 }
 
 pub fn run2() {
-    let input: Vec<char> = read_input().trim().chars().collect();
+    let input: Vec<char> = read_file("data/day01").trim().chars().collect();
     let offset = input.len() / 2;
     println!("Result: {}", captcha(input, offset));
 }
