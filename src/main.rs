@@ -7,6 +7,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 fn main() {
     let day = env::args()
@@ -34,6 +35,8 @@ fn main() {
         "42" => day04::run2(),
         "51" => day05::run1(),
         "52" => day05::run2(),
+        "61" => day06::run1(),
+        "62" => day06::run2(),
         _ => panic!("Unsupported day {}", day),
     }
 }
