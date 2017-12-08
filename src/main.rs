@@ -1,3 +1,7 @@
+#[macro_use]
+extern crate lazy_static;
+extern crate regex;
+
 use std::env;
 
 mod utils;
@@ -8,6 +12,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn main() {
     let day = env::args()
@@ -37,6 +42,8 @@ fn main() {
         "52" => day05::run2(),
         "61" => day06::run1(),
         "62" => day06::run2(),
+        "71" => day07::run1(),
+        "72" => day07::run2(),
         _ => panic!("Unsupported day {}", day),
     }
 }
