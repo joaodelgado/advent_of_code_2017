@@ -1,24 +1,5 @@
+use std::cmp::{max, min};
 use utils::read_file;
-
-macro_rules! min {
-    ($a:expr, $b:expr) => {
-        if $a < $b {
-            $a
-        } else {
-            $b
-        }
-    }
-}
-
-macro_rules! max {
-    ($a:expr, $b:expr) => {
-        if $a > $b {
-            $a
-        } else {
-            $b
-        }
-    }
-}
 
 fn read_input() -> Vec<Vec<u64>> {
     read_file("data/day02")
@@ -41,7 +22,9 @@ pub fn run1() {
         .map(|line| {
             line.into_iter().fold(
                 (u64::max_value(), u64::min_value()),
-                |(min, max), x| (min!(min, x), max!(max, x)),
+                |(curr_min, curr_max), x| {
+                    (min(curr_min, x), max(curr_max, x))
+                },
             )
         })
         .map(|(min, max)| max - min)
@@ -60,8 +43,8 @@ pub fn run2() {
         .map(|line| {
             for (i, a) in line.clone().into_iter().enumerate() {
                 for &b in line[i + 1..].into_iter() {
-                    let max = max!(a, b);
-                    let min = min!(a, b);
+                    let max = max(a, b);
+                    let min = min(a, b);
                     if max % min == 0 {
                         return max / min;
                     }
