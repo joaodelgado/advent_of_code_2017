@@ -14,18 +14,19 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 fn main() {
     let day = env::args()
         .nth(1)
         .expect("Expected at least one argument representing the day")
-        .parse::<isize>()
+        .parse::<usize>()
         .expect("This first argument must be a number representing the day");
 
     let part = env::args()
         .nth(2)
         .unwrap_or("1".to_string())
-        .parse::<isize>()
+        .parse::<usize>()
         .expect(
             "This second argument must be a number representing the part of the puzzle",
         );
@@ -47,6 +48,8 @@ fn main() {
         "72" => day07::run2(),
         "81" => day08::run1(),
         "82" => day08::run2(),
+        "91" => day09::run1(),
+        "92" => day09::run2(),
         _ => panic!("Unsupported day {}", day),
     }
 }
