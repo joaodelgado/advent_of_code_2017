@@ -3,22 +3,71 @@ extern crate lazy_static;
 extern crate regex;
 
 use std::env;
+use std::fmt::Display;
 
 mod utils;
+mod graph;
+mod hash;
 
 mod day01;
+use day01::Day01;
+
 mod day02;
+use day02::Day02;
+
 mod day03;
+use day03::Day03;
+
 mod day04;
+use day04::Day04;
+
 mod day05;
+use day05::Day05;
+
 mod day06;
+use day06::Day06;
+
 mod day07;
+use day07::Day07;
+
 mod day08;
+use day08::Day08;
+
 mod day09;
+use day09::Day09;
+
 mod day10;
+use day10::Day10;
+
 mod day11;
+use day11::Day11;
+
 mod day12;
+use day12::Day12;
+
 mod day13;
+use day13::Day13;
+
+mod day14;
+use day14::Day14;
+
+pub trait Day<T1, T2>
+where
+    T1: Display,
+    T2: Display,
+{
+    fn run(part: usize) {
+        match part {
+            1 => println!("Result: {}", Self::run1()),
+            2 => println!("Result: {}", Self::run2()),
+            _ => panic!("Unsupported part {}", part),
+        };
+    }
+
+    fn run1() -> T1;
+
+    fn run2() -> T2;
+}
 
 fn main() {
     let day = env::args()
@@ -35,33 +84,22 @@ fn main() {
             "This second argument must be a number representing the part of the puzzle",
         );
 
-    match format!("{}{}", day, part).as_ref() {
-        "11" => day01::run1(),
-        "12" => day01::run2(),
-        "21" => day02::run1(),
-        "22" => day02::run2(),
-        "31" => day03::run1(),
-        "32" => day03::run2(),
-        "41" => day04::run1(),
-        "42" => day04::run2(),
-        "51" => day05::run1(),
-        "52" => day05::run2(),
-        "61" => day06::run1(),
-        "62" => day06::run2(),
-        "71" => day07::run1(),
-        "72" => day07::run2(),
-        "81" => day08::run1(),
-        "82" => day08::run2(),
-        "91" => day09::run1(),
-        "92" => day09::run2(),
-        "101" => day10::run1(),
-        "102" => day10::run2(),
-        "111" => day11::run1(),
-        "112" => day11::run2(),
-        "121" => day12::run1(),
-        "122" => day12::run2(),
-        "131" => day13::run1(),
-        "132" => day13::run2(),
+    match day {
+        01 => Day01::run(part),
+        02 => Day02::run(part),
+        03 => Day03::run(part),
+        04 => Day04::run(part),
+        05 => Day05::run(part),
+        06 => Day06::run(part),
+        07 => Day07::run(part),
+        08 => Day08::run(part),
+        09 => Day09::run(part),
+        10 => Day10::run(part),
+        11 => Day11::run(part),
+        12 => Day12::run(part),
+        13 => Day13::run(part),
+        14 => Day14::run(part),
         _ => panic!("Unsupported day {}", day),
-    }
+    };
+
 }

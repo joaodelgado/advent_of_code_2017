@@ -1,73 +1,93 @@
+use Day;
 use utils::read_file;
 
-pub fn run1() {
-    let input = read_file("data/day09");
+pub struct Day09 {}
 
-    let mut garbage = false;
-    let mut escaping = false;
-    let mut nest_lvl = 0;
-    let mut result = 0;
+impl Day<usize, usize> for Day09 {
+    fn run1() -> usize {
+        let input = read_file("data/day09");
 
-    for c in input.chars() {
+        let mut garbage = false;
+        let mut escaping = false;
+        let mut nest_lvl = 0;
+        let mut result = 0;
 
-        if escaping {
-            escaping = false;
-            continue;
-        }
+        for c in input.chars() {
 
-        if garbage {
+            if escaping {
+                escaping = false;
+                continue;
+            }
+
+            if garbage {
+                match c {
+                    '>' => garbage = false,
+                    '!' => escaping = true,
+                    _ => (),
+                }
+                continue;
+            }
+
             match c {
-                '>' => garbage = false,
-                '!' => escaping = true,
+                '<' => garbage = true,
+                '{' => nest_lvl += 1,
+                '}' => {
+                    result += nest_lvl;
+                    nest_lvl -= 1;
+                }
                 _ => (),
             }
-            continue;
+
         }
 
-        match c {
-            '<' => garbage = true,
-            '{' => nest_lvl += 1,
-            '}' => {
-                result += nest_lvl;
-                nest_lvl -= 1;
-            }
-            _ => (),
-        }
-
+        result
     }
 
-    println!("Result: {}", result);
+    fn run2() -> usize {
+        let input = read_file("data/day09");
+
+        let mut garbage = false;
+        let mut escaping = false;
+        let mut result = 0;
+
+        for c in input.chars() {
+
+            if escaping {
+                escaping = false;
+                continue;
+            }
+
+            if garbage {
+                match c {
+                    '>' => garbage = false,
+                    '!' => escaping = true,
+                    _ => result += 1,
+                }
+                continue;
+            }
+
+            match c {
+                '<' => garbage = true,
+                _ => (),
+            }
+
+        }
+
+        result
+    }
 }
 
-pub fn run2() {
-    let input = read_file("data/day09");
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let mut garbage = false;
-    let mut escaping = false;
-    let mut result = 0;
-
-    for c in input.chars() {
-
-        if escaping {
-            escaping = false;
-            continue;
-        }
-
-        if garbage {
-            match c {
-                '>' => garbage = false,
-                '!' => escaping = true,
-                _ => result += 1,
-            }
-            continue;
-        }
-
-        match c {
-            '<' => garbage = true,
-            _ => (),
-        }
-
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day09::run1(), 14421);
     }
 
-    println!("Result: {}", result);
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day09::run2(), 6817);
+    }
 }

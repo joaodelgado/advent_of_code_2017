@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 use std::collections::HashMap;
+
+use Day;
 use utils::read_file;
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
@@ -56,39 +58,57 @@ fn read_input() -> State {
     }
 }
 
-pub fn run1() {
-    let mut curr = read_input();
-    let mut previous_states: HashSet<State> = HashSet::new();
-    let mut iterations = 0;
+pub struct Day06 {}
 
-    loop {
-        if previous_states.contains(&curr) {
-            break;
+impl Day<usize, usize> for Day06 {
+    fn run1() -> usize {
+        let mut curr = read_input();
+        let mut previous_states: HashSet<State> = HashSet::new();
+        let mut iterations = 0;
+
+        loop {
+            if previous_states.contains(&curr) {
+                break;
+            }
+            iterations += 1;
+            previous_states.insert(curr.clone());
+
+            curr.cycle();
         }
-        iterations += 1;
-        previous_states.insert(curr.clone());
 
-        curr.cycle();
+        iterations
     }
 
-    println!("Result: {}", iterations);
+    fn run2() -> usize {
+        let mut curr = read_input();
+        let mut previous_states: HashMap<State, usize> = HashMap::new();
+        let mut iterations = 0;
+
+        loop {
+            if previous_states.contains_key(&curr) {
+                break;
+            }
+            iterations += 1;
+            previous_states.insert(curr.clone(), iterations);
+
+            curr.cycle();
+        }
+
+        iterations - previous_states.get(&curr).unwrap() + 1
+    }
 }
 
-pub fn run2() {
-    let mut curr = read_input();
-    let mut previous_states: HashMap<State, usize> = HashMap::new();
-    let mut iterations = 0;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    loop {
-        if previous_states.contains_key(&curr) {
-            break;
-        }
-        iterations += 1;
-        previous_states.insert(curr.clone(), iterations);
-
-        curr.cycle();
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day06::run1(), 14029);
     }
 
-    let result = iterations - previous_states.get(&curr).unwrap() + 1;
-    println!("Result: {}", result);
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day06::run2(), 2765);
+    }
 }

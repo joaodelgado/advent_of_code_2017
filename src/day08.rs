@@ -2,6 +2,7 @@ use std::cmp::max;
 use std::collections::HashMap;
 use regex::Regex;
 
+use Day;
 use utils::read_file;
 
 
@@ -86,27 +87,45 @@ fn read_input() -> Vec<String> {
         .collect()
 }
 
-pub fn run1() {
-    let mut cpu = Cpu::default();
-    let instructions = read_input();
+pub struct Day08 {}
 
-    for instr in instructions {
-        cpu.execute(&instr);
+impl Day<isize, isize> for Day08 {
+    fn run1() -> isize {
+        let mut cpu = Cpu::default();
+        let instructions = read_input();
+
+        for instr in instructions {
+            cpu.execute(&instr);
+        }
+
+        *cpu.registers.values().max().unwrap()
     }
 
-    let result = cpu.registers.values().max().unwrap();
-    println!("Result: {}", result);
+    fn run2() -> isize {
+        let mut cpu = Cpu::default();
+        let instructions = read_input();
+        let mut result = isize::min_value();
+
+        for instr in instructions {
+            cpu.execute(&instr);
+            result = max(result, *cpu.registers.values().max().unwrap());
+        }
+
+        result
+    }
 }
 
-pub fn run2() {
-    let mut cpu = Cpu::default();
-    let instructions = read_input();
-    let mut result = isize::min_value();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    for instr in instructions {
-        cpu.execute(&instr);
-        result = max(result, *cpu.registers.values().max().unwrap());
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day08::run1(), 4163);
     }
 
-    println!("Result: {}", result);
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day08::run2(), 5347);
+    }
 }

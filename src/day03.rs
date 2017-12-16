@@ -1,13 +1,10 @@
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, Hash)]
-struct Coord {
-    x: isize,
-    y: isize,
-}
+use Day;
+use graph::Coord;
 
 impl Coord {
-    fn from_number(n: usize) -> Coord {
+    fn from_spiral(n: usize) -> Coord {
         let mut x = 0isize;
         let mut y = 0isize;
         let mut dx = 0;
@@ -24,90 +21,58 @@ impl Coord {
 
         Coord { x: x, y: y }
     }
-
-    fn dist(&self) -> usize {
-        (self.x.abs() + self.y.abs()) as usize
-    }
-
-    fn adjacent(&self) -> Vec<Coord> {
-        vec![
-            Coord {
-                x: self.x - 1,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x - 1,
-                y: self.y,
-            },
-            Coord {
-                x: self.x - 1,
-                y: self.y + 1,
-            },
-
-            Coord {
-                x: self.x,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x,
-                y: self.y,
-            },
-            Coord {
-                x: self.x,
-                y: self.y + 1,
-            },
-
-            Coord {
-                x: self.x + 1,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x + 1,
-                y: self.y,
-            },
-            Coord {
-                x: self.x + 1,
-                y: self.y + 1,
-            },
-        ]
-    }
 }
 
-pub fn run1() {
-    let input = 312051;
-    let coord = Coord::from_number(input);
-    let result = coord.dist();
+pub struct Day03 {}
 
-    println!("Result: {}", result);
-}
+impl Day<usize, usize> for Day03 {
+    fn run1() -> usize {
+        let input = 312051;
+        let coord = Coord::from_spiral(input);
+        coord.dist()
+    }
 
-pub fn run2() {
-    let input = 312051;
+    fn run2() -> usize {
+        let input = 312051;
 
-    let mut matrix: HashMap<Coord, usize> = HashMap::new();
+        let mut matrix: HashMap<Coord, usize> = HashMap::new();
 
-    matrix.insert(Coord { x: 0, y: 0 }, 1);
+        matrix.insert(Coord { x: 0, y: 0 }, 1);
 
-    let mut n = 2;
-    loop {
-        let coord = Coord::from_number(n);
-        let value: usize = coord
-            .adjacent()
-            .into_iter()
-            .map(|c| match matrix.get(&c) {
-                Some(&v) => v,
-                None => 0,
-            })
-            .sum();
+        let mut n = 2;
+        loop {
+            let coord = Coord::from_spiral(n);
+            let value = coord
+                .adj_with_diagonals()
+                .into_iter()
+                .map(|c| match matrix.get(&c) {
+                    Some(&v) => v,
+                    None => 0,
+                })
+                .sum();
 
-        if value > input {
-            println!("Result: {}", value);
-            break;
+            if value > input {
+                return value;
+            }
+
+            matrix.insert(coord, value);
+            n += 1;
+
         }
+    }
+}
 
-        matrix.insert(coord, value);
-        n += 1;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day03::run1(), 430);
     }
 
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day03::run2(), 312453);
+    }
 }

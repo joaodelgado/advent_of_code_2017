@@ -1,3 +1,4 @@
+use Day;
 use utils::read_file;
 
 #[derive(Clone)]
@@ -74,28 +75,47 @@ fn read_firewall() -> Firewall {
     )
 }
 
-pub fn run1() {
-    let mut firewall = read_firewall();
+pub struct Day13 {}
 
-    let (_, severity) = firewall.simulate(0);
+impl Day<usize, usize> for Day13 {
+    fn run1() -> usize {
+        let mut firewall = read_firewall();
 
-    println!("Result: {}", severity);
-}
+        let (_, severity) = firewall.simulate(0);
 
-pub fn run2() {
-    let mut firewall = read_firewall();
-
-    let mut delay = 0;
-
-    println!("Working. This one takes a few seconds");
-
-    loop {
-        let (detected, _) = firewall.simulate(delay);
-        if !detected {
-            break;
-        }
-        delay += 1;
+        severity
     }
 
-    println!("Result: {}", delay);
+    fn run2() -> usize {
+        let mut firewall = read_firewall();
+
+        let mut delay = 0;
+
+        println!("Working. This one takes a few seconds");
+
+        loop {
+            let (detected, _) = firewall.simulate(delay);
+            if !detected {
+                break;
+            }
+            delay += 1;
+        }
+
+        delay
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day13::run1(), 1900);
+    }
+
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day13::run2(), 3966414);
+    }
 }

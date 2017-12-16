@@ -17,3 +17,7 @@ pub fn read_file(path: &str) -> String {
 pub fn bytes_to_hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{:02x}", b)).collect()
 }
+
+pub fn bit_set(input: u8, n: u8) -> bool {
+    input & (1 << n) != 0
+}

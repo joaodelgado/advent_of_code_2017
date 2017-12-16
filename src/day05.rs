@@ -1,3 +1,4 @@
+use Day;
 use utils::read_file;
 
 fn read_input() -> Vec<isize> {
@@ -30,12 +31,29 @@ where
     iter
 }
 
-pub fn run1() {
-    let result = run(|n| n + 1);
-    println!("Result: {}", result);
+pub struct Day05 {}
+
+impl Day<usize, usize> for Day05 {
+    fn run1() -> usize {
+        run(|n| n + 1)
+    }
+
+    fn run2() -> usize {
+        run(|n| if n >= 3 { n - 1 } else { n + 1 })
+    }
 }
 
-pub fn run2() {
-    let result = run(|n| if n >= 3 { n - 1 } else { n + 1 });
-    println!("Result: {}", result);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day05::run1(), 375042);
+    }
+
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day05::run2(), 28707598);
+    }
 }

@@ -1,15 +1,11 @@
-use std::collections::{HashSet, HashMap};
 use regex::Regex;
+
+use Day;
 use utils::read_file;
+use graph::{Graph, Node};
 
-#[derive(PartialEq, Eq, Hash, Clone)]
-struct Node {
-    id: usize,
-    connections: Vec<usize>,
-}
-
-impl Node {
-    fn parse(input: &str) -> Node {
+impl<'a> From<&'a str> for Node<usize> {
+    fn from(input: &str) -> Node<usize> {
         lazy_static! {
             static ref RE: Regex = Regex::new(
                 r"^(?P<id>\d+)\s+<->\s+(?P<connections>[\d,\s]+)"
@@ -45,75 +41,61 @@ impl Node {
 
         Node {
             id: id,
-            connections: connections,
+            children: connections,
         }
     }
 }
 
-struct Graph {
-    nodes: HashMap<usize, Node>,
-}
-
-impl Graph {
-    fn get(&self, id: usize) -> &Node {
-        self.nodes.get(&id).expect(&format!(
-            "Node with id {} does not exist",
-            id
-        ))
-    }
-
-    fn group(&self, start: usize) -> HashSet<usize> {
-        let mut visited = HashSet::new();
-
-        self._group(start, &mut visited);
-
-        visited
-    }
-
-    fn _group(&self, curr: usize, visited: &mut HashSet<usize>) {
-        if visited.contains(&curr) {
-            return;
-        }
-
-        visited.insert(curr);
-
-        for &connection in self.get(curr).connections.iter() {
-            self._group(connection, visited);
-        }
-    }
-}
-
-fn read_graph() -> Graph {
-    Graph {
-        nodes: read_file("data/day12")
+fn read_graph() -> Graph<usize> {
+    Graph::from_nodes(
+        read_file("data/day12")
             .split('\n')
             .filter(|s| !s.is_empty())
-            .map(Node::parse)
-            .map(|node| (node.id, node))
+            .map(Node::from)
             .collect(),
+    )
+
+}
+
+pub struct Day12 {}
+
+impl Day<usize, usize> for Day12 {
+    fn run1() -> usize {
+        let graph = read_graph();
+        let result = graph.group(&0).nodes.keys().len();
+
+        result
     }
 
-}
+    fn run2() -> usize {
+        let graph = read_graph();
 
-pub fn run1() {
-    let graph = read_graph();
-    let result = graph.group(0).len();
-    println!("Result: {}", result);
-}
+        let mut result = 0;
+        let mut visited = Graph::new();
 
-pub fn run2() {
-    let graph = read_graph();
-
-    let mut result = 0;
-    let mut visited = HashSet::new();
-
-    for node in graph.nodes.keys() {
-        if visited.contains(node) {
-            continue;
+        for node in graph.nodes.keys() {
+            if visited.contains(node) {
+                continue;
+            }
+            result += 1;
+            visited.extend(&graph.group(node));
         }
-        result += 1;
-        visited.extend(graph.group(*node));
+
+        result
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day12::run1(), 378);
     }
 
-    println!("Result: {}", result);
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day12::run2(), 204);
+    }
 }

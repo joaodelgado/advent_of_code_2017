@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use regex::Regex;
 
+use Day;
 use utils::read_file;
 
+#[derive(Debug)]
 struct Program {
     name: String,
     weigth: usize,
@@ -72,10 +74,9 @@ impl Tower {
         curr
     }
 
-    fn check_balance(&self, p: &Program) -> usize {
-        // println!("Checking balance of {}", p.name);
+    fn unbalanced_child(&self, p: &Program) -> Option<(&Program, isize)> {
         if p.children.is_empty() {
-            return 0;
+            return None;
         }
 
         let children = self.children(p);
@@ -83,13 +84,11 @@ impl Tower {
 
         for mut child in children.iter() {
             let weigth = self.weigth(&mut child);
-            // println!("Checking weight of child {}: {}", child.name, weigth);
             let count: &mut usize = children_weigths.entry(weigth).or_insert(0);
             *count += 1;
         }
 
         if children_weigths.len() > 1 {
-            // Is this case we are in a unbalanced state
             let expected_weigth = children_weigths
                 .iter()
                 .find(|&(_, count)| *count > 1)
@@ -103,9 +102,12 @@ impl Tower {
                 })
                 .unwrap();
             let diff = *expected_weigth as isize - self.weigth(unbalanced_child) as isize;
-            return (unbalanced_child.weigth as isize + diff) as usize;
+            return Some((
+                unbalanced_child,
+                (unbalanced_child.weigth as isize + diff),
+            ));
         } else {
-            return 0;
+            None
         }
     }
 
@@ -132,7 +134,6 @@ impl Tower {
 
 fn read_input() -> Tower {
     Tower {
-        // programs: input
         programs: read_file("data/day07")
             .split('\n')
             .filter(|s| !s.is_empty())
@@ -142,21 +143,41 @@ fn read_input() -> Tower {
     }
 }
 
-pub fn run1() {
-    let tower = read_input();
-    let root = tower.root();
-    println!("Result: {}", root.name);
-}
+pub struct Day07 {}
 
-pub fn run2() {
-    let tower = read_input();
+impl Day<String, isize> for Day07 {
+    fn run1() -> String {
 
-    for program in tower.programs.values() {
-        let diff = tower.check_balance(&program);
-        if diff != 0 {
-            println!("Result: {}", diff);
-            return;
-        }
+        let tower = read_input();
+        let root = tower.root();
+        root.name.to_string()
     }
 
+    fn run2() -> isize {
+        let tower = read_input();
+        let mut curr = tower.root();
+        let mut diff = 0;
+
+        while let Some((p, d)) = tower.unbalanced_child(curr) {
+            curr = p;
+            diff = d;
+        }
+
+        diff
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run1() {
+        assert_eq!(Day07::run1(), "airlri");
+    }
+
+    #[test]
+    fn test_run2() {
+        assert_eq!(Day07::run2(), 1206);
+    }
 }
