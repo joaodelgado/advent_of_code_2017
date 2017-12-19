@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::cmp::{min, max};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Direction {
     N,
     NE,
@@ -16,7 +16,35 @@ pub enum Direction {
 
 impl Direction {
     #[cfg_attr(rustfmt, rustfmt_skip)]
+    pub fn backwards(&self) -> Direction {
+        use self::Direction::*;
+        match *self {
+            N  => S,
+            NE => SW,
+            E  => W,
+            SE => NW,
+            S  => N,
+            SW => NE,
+            W  => E,
+            NW => SE,
+        }
+    }
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     pub fn walk(&self, coord: &Coord) -> Coord {
+        match *self {
+            Direction::N  => Coord{ x: coord.x,     y: coord.y + 1 },
+            Direction::NE => Coord{ x: coord.x + 1, y: coord.y + 1 },
+            Direction::E  => Coord{ x: coord.x + 1, y: coord.y },
+            Direction::SE => Coord{ x: coord.x + 1, y: coord.y - 1 },
+            Direction::S  => Coord{ x: coord.x,     y: coord.y - 1 },
+            Direction::SW => Coord{ x: coord.x - 1, y: coord.y - 1 },
+            Direction::W  => Coord{ x: coord.x - 1, y: coord.y },
+            Direction::NW => Coord{ x: coord.x - 1, y: coord.y + 1 },
+        }
+    }
+
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    pub fn walk_hex(&self, coord: &Coord) -> Coord {
         match *self {
             Direction::N  => Coord{ x: coord.x,     y: coord.y + 2 },
             Direction::NE => Coord{ x: coord.x + 1, y: coord.y + 1 },
@@ -26,7 +54,6 @@ impl Direction {
             Direction::SW => Coord{ x: coord.x - 1, y: coord.y - 1 },
             Direction::W  => Coord{ x: coord.x - 2, y: coord.y },
             Direction::NW => Coord{ x: coord.x - 1, y: coord.y + 1 },
-
         }
     }
 }
@@ -70,71 +97,41 @@ impl Coord {
 
         closest + (furthest - closest + 1) / 2
     }
+
     /// Returns list of adjacent coordinates
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     pub fn adj(&self) -> Vec<Coord> {
         vec![
-            Coord {
-                x: self.x - 1,
-                y: self.y,
-            },
-            Coord {
-                x: self.x,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x,
-                y: self.y + 1,
-            },
-            Coord {
-                x: self.x + 1,
-                y: self.y,
-            },
+            Coord { x: self.x - 1, y: self.y,     },
+            Coord { x: self.x,     y: self.y - 1, },
+            Coord { x: self.x,     y: self.y + 1, },
+            Coord { x: self.x + 1, y: self.y,     },
         ]
 
     }
 
     /// Returns list of adjacent coordinates (including diagonals)
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     pub fn adj_with_diagonals(&self) -> Vec<Coord> {
         vec![
-            Coord {
-                x: self.x - 1,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x - 1,
-                y: self.y,
-            },
-            Coord {
-                x: self.x - 1,
-                y: self.y + 1,
-            },
-
-            Coord {
-                x: self.x,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x,
-                y: self.y,
-            },
-            Coord {
-                x: self.x,
-                y: self.y + 1,
-            },
-
-            Coord {
-                x: self.x + 1,
-                y: self.y - 1,
-            },
-            Coord {
-                x: self.x + 1,
-                y: self.y,
-            },
-            Coord {
-                x: self.x + 1,
-                y: self.y + 1,
-            },
+            Coord { x: self.x - 1, y: self.y - 1, },
+            Coord { x: self.x - 1, y: self.y,     },
+            Coord { x: self.x - 1, y: self.y + 1, },
+            Coord { x: self.x,     y: self.y - 1, },
+            Coord { x: self.x,     y: self.y,     },
+            Coord { x: self.x,     y: self.y + 1, },
+            Coord { x: self.x + 1, y: self.y - 1, },
+            Coord { x: self.x + 1, y: self.y,     },
+            Coord { x: self.x + 1, y: self.y + 1, },
         ]
+    }
+
+    pub fn walk(&mut self, dir: &Direction) {
+        *self = dir.walk(self)
+    }
+
+    pub fn walk_hex(&mut self, dir: &Direction) {
+        *self = dir.walk_hex(self)
     }
 }
 

@@ -20,7 +20,7 @@ impl Day<usize, usize> for Day11 {
 
         let mut coord = Coord { x: 0, y: 0 };
         for direction in directions {
-            coord = direction.walk(&coord);
+            coord.walk_hex(&direction);
         }
 
         coord.dist_hex()
@@ -33,7 +33,7 @@ impl Day<usize, usize> for Day11 {
         let mut result = usize::min_value();
 
         for direction in directions {
-            coord = direction.walk(&coord);
+            coord.walk_hex(&direction);
             result = max(result, coord.dist_hex());
         }
 

@@ -63,6 +63,9 @@ use day17::Day17;
 mod day18;
 use day18::Day18;
 
+mod day19;
+use day19::Day19;
+
 pub trait Day<T1, T2>
 where
     T1: Display,
@@ -115,6 +118,7 @@ fn main() {
         16 => Day16::run(part),
         17 => Day17::run(part),
         18 => Day18::run(part),
+        19 => Day19::run(part),
         _ => panic!("Unsupported day {}", day),
     };
 
