@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::prelude::*;
 
+pub const ALPHABET: &'static str = "abcdefghijklmnopqrstuvyxwz";
+
 pub fn read_file(path: &str) -> String {
     let mut input = String::new();
     {
